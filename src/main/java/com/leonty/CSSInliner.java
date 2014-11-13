@@ -13,20 +13,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.leonty.Selector;
 import com.osbcp.cssparser.CSSParser;
 import com.osbcp.cssparser.PropertyValue;
 import com.osbcp.cssparser.Rule;
 
 public class CSSInliner {
 
-	
 	public static String inlineCss(String html, String css) throws Exception {
 		return inlineCss(html, css, false);
-	}	
+	}
 	
 	public static String inlineCss(String html, String css, Boolean removeAttributes) throws Exception {	
-		
 		Document doc = Jsoup.parse(html);
 		HashMap<Element, ArrayList<Selector>> selected = new HashMap<Element, ArrayList<Selector>>();
 			
@@ -43,13 +40,17 @@ public class CSSInliner {
 		Iterator<Entry<Element, ArrayList<Selector>>> it = selected.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Element, ArrayList<Selector>> pair = it.next();
-			
-			String style = pair.getKey().attr("style") + " ";
 
 			Collections.sort(pair.getValue());
-			Collections.reverse(pair.getValue());
+
+			String style = "";
 			for (Selector selector : pair.getValue()) {
 				style += selector.getStyle();
+			}
+
+			String initialStyle = pair.getKey().attr("style");
+			if (initialStyle != null && !initialStyle.isEmpty()) {
+				style += initialStyle;
 			}
 			
 			pair.getKey().attr("style", style);
@@ -105,7 +106,6 @@ public class CSSInliner {
 	}
 	
 	public static String getStyleString(Rule rule) {
-		
 		String style = "";
 		
 		for (PropertyValue propertyValue : rule.getPropertyValues()) {
