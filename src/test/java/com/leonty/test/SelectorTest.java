@@ -1,8 +1,9 @@
 package com.leonty.test;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
 import com.leonty.Selector;
+import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 public class SelectorTest {
 

@@ -1,13 +1,12 @@
 package com.leonty.test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.Scanner;
 
-import org.junit.Test;
-
 import com.leonty.CSSInliner;
+import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 public class CSSInlinerTest {
 
