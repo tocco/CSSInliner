@@ -10,6 +10,12 @@ Css will be merged with provided html:
 If used for email, 'class' attributes can be removed:
 	String inlinedHtml = CSSInliner.inlineCss(html, css, true);
 
+##Build
+
+The dependency com.osbcp.cssparser:cssparser:1.4 is not available
+in maven central. Deploy the jar from lib/osbcp-css-parser-1.4.jar
+to your own maven repository so that it fits the dependency
+declaration in the pom.
 
 ##Changes
 
