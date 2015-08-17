@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.leonty</groupId>
 	<artifactId>CSSInliner</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<name>Java CSS Inliner</name>
 	<description>Utility to inline css styles in html document to be used in emails.</description>
 	<url>${github.url}</url>
@@ -44,7 +43,7 @@
 		<connection>scm:git:${github.url}.git</connection>
 		<developerConnection>scm:git:${github.url}.git</developerConnection>
 		<url>${github.url}</url>
-		<tag>HEAD</tag>
+		<tag>CSSInliner-1.1</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
