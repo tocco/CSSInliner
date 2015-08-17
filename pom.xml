@@ -29,7 +29,8 @@
 		</developer>
 	</developers>
 	<properties>
-		<java.version>7</java.version>
+		<source.java.version>1.7</java.version>
+		<target.java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<github.user>raisercostin</github.user>
 		<github.repo>CSSInliner</github.repo>
@@ -68,14 +69,12 @@
 			<version>6.8.8</version>
 			<scope>test</scope>
 		</dependency>
-		<!--
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
-		-->
 	</dependencies>
 
 	<build>
@@ -83,10 +82,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
+				<version>3.3</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<source>${source.java.version}</source>
+					<target>${target.java.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
