@@ -32,14 +32,29 @@
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.8.8</version>
-<scope>test</scope>
+			<scope>test</scope>
 		</dependency>
-<!--
+		<!--
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+			<scope>test</scope>
 		</dependency>
--->
+		-->
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>jcenter-bintray</id>
+			<name>Bintray JCenter Maven Repository</name>
+			<layout>default</layout>
+			<url>https://jcenter.bintray.com/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
