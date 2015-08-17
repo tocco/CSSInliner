@@ -12,10 +12,8 @@ If used for email, 'class' attributes can be removed:
 
 ##Build
 
-The dependency com.osbcp.cssparser:cssparser:1.4 is not available
-in maven central. Deploy the jar from lib/osbcp-css-parser-1.4.jar
-to your own maven repository so that it fits the dependency
-declaration in the pom.
+The dependency com.osbcp:cssparser:1.5 is now available
+in maven central.
 
 ##Changes
 

@@ -25,7 +25,12 @@ public class CSSInlinerTest {
 
 		String inlinedHtml = readFile("inlined.html");
 
-		assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		//assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		assertEquals(normalized(inlinedHtml), normalized(CSSInliner.inlineCss(html, css, true)));
+	}
+
+	private String normalized(String text) {
+		return text.replaceAll("[\n\r]+", "\n");
 	}
 
 	@Test(dataProvider = "selectorPrecedenceData")
