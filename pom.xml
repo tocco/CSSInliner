@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.leonty</groupId>
 	<artifactId>CSSInliner</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<name>Java CSS Inliner</name>
 	<description>Utility to inline css styles in html document to be used in emails.</description>
 	<url>${github.url}</url>
@@ -44,7 +44,7 @@
 		<connection>scm:git:${github.url}.git</connection>
 		<developerConnection>scm:git:${github.url}.git</developerConnection>
 		<url>${github.url}</url>
-		<tag>HEAD</tag>
+		<tag>CSSInliner-1.2</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
