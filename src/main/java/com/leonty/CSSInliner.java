@@ -1,6 +1,10 @@
 package com.leonty;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -62,7 +68,7 @@ public class CSSInliner {
 		css += getInternalStyles(doc);
 		remvoeExternalStyles(doc);
 		Element head = doc.head();
-		head.append("<style type=\"text/css\">\n"+css+"\n</style>");
+		head.append("<style type=\"text/css\">\n" + css + "\n</style>");
 		return doc.html();
 	}
 
@@ -160,9 +166,71 @@ public class CSSInliner {
 			String url = style.attr("href");
 			LOG.info("Download external css from [{}]", url);
 			String cssContent = Jsoup.connect(url).execute().body();
-			styles.append("/*external css from [").append(url).append("]*/\n").append(cssContent).append("\n");
+			cssContent = replaceRelativeUrls(cssContent, url);
+			styles.append("/*external css from [").append(url).append("]*/\n")
+					.append(cssContent).append("\n");
 		}
 		return styles.toString();
+	}
+	private static final Pattern url1 = Pattern.compile("url\\([ ]*'([^']+)'[ ]*\\)");
+	private static final Pattern url2 = Pattern.compile("url\\([ ]*\"([^\"]+)\"[ ]*\\)");
+
+	private static String replaceRelativeUrls(String cssContent, String url) {
+		String result = cssContent;
+		result = replaceUrlWithSeparator(result, url, "'", url1);
+		result = replaceUrlWithSeparator(result, url, "\"", url2);
+		return result;
+	}
+
+	private static String replaceUrlWithSeparator(String cssContent,
+			String url, String separator, Pattern urlMatcher) {
+		try {
+			String result = cssContent;
+			Matcher m = urlMatcher.matcher(result);
+			StringBuffer sb = new StringBuffer();
+			URI fullURL = new URI(url);
+			URI parent = fullURL.getPath().endsWith("/") ? fullURL.resolve("..") : fullURL.resolve(".");
+			while (m.find()) {
+				String foundUrl = m.group(1);
+				//System.out.println(foundUrl + "->" + isAbsoluteURL(foundUrl));
+				String replacement = "";
+				if (isAbsoluteURL(foundUrl))
+					replacement = foundUrl;
+				else
+					replacement = parent.toString() + foundUrl;
+				m.appendReplacement(sb, "url("+separator+replacement+separator+")");
+			}
+			m.appendTail(sb);
+			result = sb.toString();
+			result = url2.matcher(result).replaceAll("url(\"$1\")");
+			return result;
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**@see http://stackoverflow.com/questions/10159186/how-to-get-parent-url-in-java */
+	public static boolean isAbsoluteURL(String url) {
+		try {
+			final URL baseHTTP = new URL("http://example.com");
+			final URL baseFILE = new URL("file:///");
+			URL frelative = new URL(baseFILE, url);
+			URL hrelative = new URL(baseHTTP, url);
+			// System.err.println("DEBUG: file URL: " + frelative.toString());
+			// System.err.println("DEBUG: http URL: " + hrelative.toString());
+			return frelative.equals(hrelative);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static boolean isAbsoluteURL2(String url) {
+		try {
+			URI u = new URI(url);
+			return u.isAbsolute();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static void remvoeExternalStyles(Document doc) {
@@ -171,8 +239,7 @@ public class CSSInliner {
 	}
 
 	private static Elements selectExternalStyle(Document doc) {
-		return doc
-				.select("link[rel=stylesheet],link[type=text/css]");
+		return doc.select("link[rel=stylesheet],link[type=text/css]");
 	}
 
 	public static String getInternalStyles(Document doc) throws IOException {
