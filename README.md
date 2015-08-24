@@ -12,11 +12,17 @@ If used for email, 'class' attributes can be removed:
 
 ##Build
 
-The dependency com.osbcp.cssparser:cssparser:1.4 is not available
-in maven central. Deploy the jar from lib/osbcp-css-parser-1.4.jar
-to your own maven repository so that it fits the dependency
-declaration in the pom.
+The dependency com.osbcp:cssparser:1.5 is now available
+in maven central.
 
+##Other similar libraries
+- CSS parsers
+	- [https://github.com/phax/ph-css](https://github.com/phax/ph-css)
+	- [http://stackoverflow.com/questions/1513587/looking-for-a-css-parser-in-java](http://stackoverflow.com/questions/1513587/looking-for-a-css-parser-in-java)
+	- [http://sourceforge.net/p/cssparser/](http://sourceforge.net/p/cssparser/)
+- Other resources
+	- [inline vs internal vs external css](https://vineetgupta22.wordpress.com/2011/07/09/inline-vs-internal-vs-external-css/)
+	
 ##Changes
 
 v1.0 2012-02-05 Leonti Bielski
@@ -29,5 +35,4 @@ CSSInliner
 Copyright 2012 Leonti Bielski, leonti.me
 
 Licensed under the Apache License, Version 2.0
-
 

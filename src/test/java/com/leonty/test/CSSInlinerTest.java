@@ -12,10 +12,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
-
+//import org.testng.annotations.Test;
+//import static org.testng.AssertJUnit.assertEquals;
 public class CSSInlinerTest {
 
 	@Test
@@ -25,10 +26,37 @@ public class CSSInlinerTest {
 
 		String inlinedHtml = readFile("inlined.html");
 
-		assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		//assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		assertEquals(normalized(inlinedHtml), normalized(CSSInliner.inlineCss(html, css, true)));
 	}
 
-	@Test(dataProvider = "selectorPrecedenceData")
+	@Test
+	public void test2() throws Exception {
+		String html = readFile("test2.html");
+		//String css = readFile("test.css");
+
+		String inlinedHtml = readFile("test2-inlined.html");
+
+		//assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		assertEquals(normalized(CSSInliner.cleanup(inlinedHtml)), normalized(CSSInliner.inlineCss(html, true)));
+	}
+
+	@Test
+	public void testInternalStyle() throws Exception {
+		String html = readFile("test2.html");
+		//String css = readFile("test.css");
+
+		String internalHtml = readFile("test2-internal.html");
+
+		//assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		assertEquals(normalized(CSSInliner.cleanup(internalHtml)), normalized(CSSInliner.internalCss(html)));
+	}
+
+	private String normalized(String text) {
+		return text.replaceAll("\\r\\n|\\n|\\r", "\n").replaceAll("\\t","  ").replaceAll("\\s+\\n","\n");
+	}
+
+	@org.testng.annotations.Test(dataProvider = "selectorPrecedenceData")
 	public void testSelectorPrecedence(String css, String initialStyleAttribute, String expectedStyleAttribute) throws Exception {
 		String html =
 				"<html>\n" +

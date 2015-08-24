@@ -1,22 +1,57 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.leonty</groupId>
 	<artifactId>CSSInliner</artifactId>
-	<version>1.0</version>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<version>1.5-SNAPSHOT</version>
+	<name>Java CSS Inliner</name>
+	<description>Utility to inline css styles in html document to be used in emails.</description>
+	<url>${github.url}</url>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Leonti</name>
+			<organizationUrl>https://github.com/Leonti</organizationUrl>
+		</developer>
+		<developer>
+			<name>Tocco AG</name>
+			<organizationUrl>https://www.tocco.ch</organizationUrl>
+		</developer>
+		<developer>
+			<name>Costin Grigore</name>
+			<email>raisercostin@gmail.com</email>
+			<organization>brainlight</organization>
+			<organizationUrl>http://raisercostin.org</organizationUrl>
+		</developer>
+	</developers>
+	<properties>
+		<source.java.version>1.7</source.java.version>
+		<target.java.version>1.7</target.java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<github.user>raisercostin</github.user>
+		<github.repo>CSSInliner</github.repo>
+		<github.url>https://github.com/${github.user}/${github.repo}</github.url>
+		<bintray.user>raisercostin</bintray.user>
+		<bintray.repo>maven</bintray.repo>
+		<bintray.package>CSSInliner</bintray.package>
+	</properties>
+
+	<scm>
+		<connection>scm:git:${github.url}.git</connection>
+		<developerConnection>scm:git:${github.url}.git</developerConnection>
+		<url>${github.url}</url>
+		<tag>HEAD</tag>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>bintray</id>
+			<url>https://api.bintray.com/maven/${bintray.user}/${bintray.repo}/${bintray.package}</url>
+		</repository>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.jsoup</groupId>
@@ -24,14 +59,95 @@
 			<version>1.8.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.osbcp.cssparser</groupId>
+			<groupId>com.osbcp</groupId>
 			<artifactId>cssparser</artifactId>
-			<version>1.4</version>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.8.8</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>${source.java.version}</source>
+					<target>${target.java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+		<id>release</id>
+		<build>
+			<plugins>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>jcenter-bintray</id>
+			<name>Bintray JCenter Maven Repository</name>
+			<layout>default</layout>
+			<url>https://jcenter.bintray.com/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
