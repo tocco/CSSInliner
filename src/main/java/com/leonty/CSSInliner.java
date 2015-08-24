@@ -209,7 +209,7 @@ public class CSSInliner {
 		}
 	}
 
-	/**@see http://stackoverflow.com/questions/10159186/how-to-get-parent-url-in-java */
+	/*see http://stackoverflow.com/questions/10159186/how-to-get-parent-url-in-java */
 	public static boolean isAbsoluteURL(String url) {
 		try {
 			final URL baseHTTP = new URL("http://example.com");
