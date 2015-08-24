@@ -41,6 +41,17 @@ public class CSSInlinerTest {
 		assertEquals(normalized(CSSInliner.cleanup(inlinedHtml)), normalized(CSSInliner.inlineCss(html, true)));
 	}
 
+	@Test
+	public void testInternalStyle() throws Exception {
+		String html = readFile("test2.html");
+		//String css = readFile("test.css");
+
+		String internalHtml = readFile("test2-internal.html");
+
+		//assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
+		assertEquals(normalized(CSSInliner.cleanup(internalHtml)), normalized(CSSInliner.internalCss(html)));
+	}
+
 	private String normalized(String text) {
 		return text.replaceAll("\\r\\n|\\n|\\r", "\n").replaceAll("\\t","  ").replaceAll("\\s+\\n","\n");
 	}

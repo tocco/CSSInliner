@@ -21,13 +21,14 @@ import com.osbcp.cssparser.PropertyValue;
 import com.osbcp.cssparser.Rule;
 
 public class CSSInliner {
-	public static final org.slf4j.Logger LOG = LoggerFactory
+	private static final org.slf4j.Logger LOG = LoggerFactory
 			.getLogger(CSSInliner.class);
 
 	public static String inlineCss(String html, String css) throws Exception {
 		return inlineCss(html, css, false);
 	}
 
+	/** Returns the cleaned html that will be used for inlining css. */
 	public static String cleanup(String html) {
 		Document doc = Jsoup.parse(html);
 		return doc.html();
@@ -37,12 +38,9 @@ public class CSSInliner {
 			Boolean removeAttributes) throws Exception {
 		Document doc = Jsoup.parse(html);
 		HashMap<Element, ArrayList<Selector>> selected = new HashMap<Element, ArrayList<Selector>>();
-
-		css += getDocumentStyles(doc);
+		css += getInternalStyles(doc);
 		extractSelectors(css, doc, selected);
-
 		mergeCss(removeAttributes, selected);
-
 		return doc.html();
 	}
 
@@ -50,12 +48,21 @@ public class CSSInliner {
 			throws Exception {
 		Document doc = Jsoup.parse(html);
 		HashMap<Element, ArrayList<Selector>> selected = new HashMap<Element, ArrayList<Selector>>();
-		String css = readDocumentStyles(doc);
-		css += getDocumentStyles(doc);
+		String css = readExternalStyles(doc);
+		remvoeExternalStyles(doc);
+		css += getInternalStyles(doc);
 		extractSelectors(css, doc, selected);
-
 		mergeCss(removeAttributes, selected);
+		return doc.html();
+	}
 
+	public static String internalCss(String html) throws IOException {
+		Document doc = Jsoup.parse(html);
+		String css = readExternalStyles(doc);
+		css += getInternalStyles(doc);
+		remvoeExternalStyles(doc);
+		Element head = doc.head();
+		head.append("<style type=\"text/css\">\n"+css+"\n</style>");
 		return doc.html();
 	}
 
@@ -132,8 +139,10 @@ public class CSSInliner {
 				}
 			}
 		}
-		LOG.warn("{} selectors where ignored while {} where returned. Switch to trace to get a list.",ignored.size(),selected.size());
-		LOG.trace("The following selectors where ignored {}",ignored);
+		LOG.warn(
+				"{} selectors where ignored while {} where returned. Switch to trace to get a list.",
+				ignored.size(), selected.size());
+		LOG.trace("The following selectors where ignored {}", ignored);
 	}
 
 	private static Try<Elements> select(Document doc, String selector) {
@@ -144,20 +153,29 @@ public class CSSInliner {
 		}
 	}
 
-	private static String readDocumentStyles(Document doc) throws IOException {
-		Elements elements = doc
-				.select("link[rel=stylesheet],link[type=text/css]");
+	private static String readExternalStyles(Document doc) throws IOException {
+		Elements elements = selectExternalStyle(doc);
 		StringBuilder styles = new StringBuilder();
 		for (Element style : elements) {
 			String url = style.attr("href");
 			LOG.info("Download external css from [{}]", url);
 			String cssContent = Jsoup.connect(url).execute().body();
-			styles.append(cssContent).append("\n");
+			styles.append("/*external css from [").append(url).append("]*/\n").append(cssContent).append("\n");
 		}
 		return styles.toString();
 	}
 
-	public static String getDocumentStyles(Document doc) throws IOException {
+	private static void remvoeExternalStyles(Document doc) {
+		Elements elements = selectExternalStyle(doc);
+		elements.remove();
+	}
+
+	private static Elements selectExternalStyle(Document doc) {
+		return doc
+				.select("link[rel=stylesheet],link[type=text/css]");
+	}
+
+	public static String getInternalStyles(Document doc) throws IOException {
 		Elements elements = doc.select("style");
 
 		String styles = "";
