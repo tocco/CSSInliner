@@ -23,20 +23,23 @@ public class CSSInliner {
 		return inlineCss(html, css, false);
 	}
 	
-	public static String inlineCss(String html, String css, Boolean removeAttributes) throws Exception {	
+	public static String inlineCss(String html, String css, boolean removeClassAttributes) throws Exception {
 		Document doc = Jsoup.parse(html);
 		HashMap<Element, ArrayList<Selector>> selected = new HashMap<Element, ArrayList<Selector>>();
 			
 		css += getDocumentStyles(doc);
 		extractSelectors(css, doc, selected);		
 		
-		mergeCss(removeAttributes, selected); 
-		
+		mergeCss(selected);
+
+		if (removeClassAttributes) {
+			removeClassAttributes(doc);
+		}
+
 		return doc.html();
 	}
 
-	private static void mergeCss(Boolean removeAttributes,
-			HashMap<Element, ArrayList<Selector>> selected) {
+	private static void mergeCss(HashMap<Element, ArrayList<Selector>> selected) {
 		Iterator<Entry<Element, ArrayList<Selector>>> it = selected.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Element, ArrayList<Selector>> pair = it.next();
@@ -54,12 +57,6 @@ public class CSSInliner {
 			}
 			
 			pair.getKey().attr("style", style);
-			
-			// if this is used for email we don't need id and style attributes
-			// as all of our styles are already inline
-			if (removeAttributes) {
-				pair.getKey().removeAttr("class");			
-			}
 		}
 	}
 
@@ -113,5 +110,12 @@ public class CSSInliner {
 		}
 		
 		return style;
+	}
+
+	private static void removeClassAttributes(Document doc) {
+		Elements elementsWithClassAttribute = doc.select("[class]");
+		for (Element element : elementsWithClassAttribute) {
+			element.removeAttr("class");
+		}
 	}
 }

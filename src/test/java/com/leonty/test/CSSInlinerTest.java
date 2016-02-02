@@ -28,6 +28,43 @@ public class CSSInlinerTest {
 		assertEquals(CSSInliner.inlineCss(html, css, true), inlinedHtml);
 	}
 
+	@Test
+	public void testKeepClasses() throws Exception {
+		String html = "<!doctype html>\n" +
+				"<html>\n" +
+				" <head>\n" +
+				"  <title>Test title</title>\n" +
+				"  <style>\n" +
+				"   #testId {\n" +
+				"    border-radius: 5px;\n" +
+				"   }\n" +
+				"  </style>\n" +
+				" </head>\n" +
+				" <body>\n" +
+				"  <p class=\"helloClass\">Test paragraph</p>\n" +
+				"  <div id=\"testId\" class=\"testClass\" style=\"border: 1px solid;\">\n" +
+				"   Test div\n" +
+				"  </div>\n" +
+				" </body>\n" +
+				"</html>";
+		String expected = "<!DOCTYPE html>\n" +
+				"<html>\n" +
+				" <head> \n" +
+				"  <title>Test title</title>  \n" +
+				" </head> \n" +
+				" <body> \n" +
+				"  <p class=\"helloClass\">Test paragraph</p> \n" +
+				"  <div id=\"testId\" class=\"testClass\" style=\"border-radius: 5px; border: 1px solid;\">\n" +
+				"    Test div \n" +
+				"  </div>  \n" +
+				" </body>\n" +
+				"</html>";
+
+		String inlined = CSSInliner.inlineCss(html, "", false);
+
+		assertEquals(inlined, expected);
+	}
+
 	@Test(dataProvider = "selectorPrecedenceData")
 	public void testSelectorPrecedence(String css, String initialStyleAttribute, String expectedStyleAttribute) throws Exception {
 		String html =
